@@ -11,6 +11,13 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   const config = {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    },
     resolve: {
       alias: [{ find: "@", replacement: resolve(__dirname, "./src") }, {
         // this is required for the SCSS modules
@@ -33,7 +40,7 @@ export default defineConfig(({ command, mode }) => {
           ],
           dts: 'src/components.d.ts',
         }),
-    
+
         // https://github.com/antfu/unocss
         // see unocss.config.ts for config
     ],
