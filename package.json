@@ -12,7 +12,7 @@
   "scripts": {
     "serve": "vite --host",
     "build": "vite build",
-    "lint": "eslint . --ext .js,.vue",
+    "lint": "eslint .",
     "build-bundle": "vite build",
     "start": "vite --host --port 8081",
     "version": "npm run build-bundle",
@@ -56,18 +56,22 @@
     "vue3-draggable-resizable": "^1.6.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vuese/markdown-render": "^2.11.3",
-    "babel-eslint": "^10.1.0",
     "chokidar": "^5.0.0",
     "concurrently": "^9.2.4",
     "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.11.0",
     "prettier": "^3.9.6",
     "sass": "^1.103.1",
-    "vite": "^8.2.1",
-    "vitepress": "^1.6.4",
     "unplugin-vue-components": "^32.1.0",
+    "vite": "^8.2.1",
     "vite-plugin-node-polyfills": "^0.28.0",
+    "vitepress": "^1.6.4",
     "vue-docgen-api": "^4.79.2"
   },
   "optionalDependencies": {
