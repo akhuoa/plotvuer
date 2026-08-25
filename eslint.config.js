@@ -1,4 +1,4 @@
-import {defineConfig} from "eslint/config";
+import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import prettier from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
