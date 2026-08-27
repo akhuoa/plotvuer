@@ -1,43 +1,31 @@
-import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import prettier from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 import vue from "eslint-plugin-vue";
 import globals from "globals";
 
-export default defineConfig([
+export default [
   {
-    ignores: [
-      "dist",
-      "docs/.vitepress/dist",
-      "docs/.vitepress/cache",
-      "docs/components",
-      "**/components.d.ts",
-    ],
+    ignores: ["dist/**", "docs/.vitepress/**", "docs/components/**"],
   },
+  js.configs.recommended,
+  ...vue.configs["flat/essential"],
+  prettierConfig,
   {
-    files: ["**/*.js", "**/*.vue"],
-    plugins: {prettier, vue},
-    extends: [js.configs.recommended, prettierConfig, vue.configs["flat/essential"]],
+    files: ["**/*.{js,vue}"],
+    plugins: {
+      prettier,
+    },
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
         ...globals.node,
+        ...globals.browser,
       },
     },
     rules: {
-      "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-      "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-      "prettier/prettier": ["error", {endOfLine: "auto"}],
+      "prettier/prettier": "error",
     },
   },
-  {
-    files: ["**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
-    languageOptions: {
-      globals: {
-        ...globals.jest,
-      },
-    },
-  },
-]);
+];
