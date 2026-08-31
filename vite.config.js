@@ -1,6 +1,6 @@
 import path from "path";
 import { resolve } from "node:path";
-const pathSrc = path.resolve(__dirname, "./src");
+const pathSrc = path.resolve(import.meta.dirname, "./src");
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
@@ -19,7 +19,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     resolve: {
-      alias: [{ find: "@", replacement: resolve(__dirname, "./src") }, {
+      alias: [{ find: "@", replacement: resolve(import.meta.dirname, "./src") }, {
         // this is required for the SCSS modules
         find: /^~(.*)$/,
         replacement: '$1',
@@ -46,7 +46,7 @@ export default defineConfig(({ command, mode }) => {
     ],
     build: {
       lib: {
-        entry: path.resolve(__dirname, "./src/components/index.js"),
+        entry: path.resolve(import.meta.dirname, "./src/components/index.js"),
         name: "PlotVuer",
         fileName: 'plotvuer',
       },
