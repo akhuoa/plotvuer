@@ -1,15 +1,13 @@
-import path from "path";
-import { resolve } from "node:path";
-const pathSrc = path.resolve(import.meta.dirname, "./src");
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
-
+import path from 'path';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command }) => {
   const config = {
     css: {
       preprocessorOptions: {
@@ -19,59 +17,60 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     resolve: {
-      alias: [{ find: "@", replacement: resolve(import.meta.dirname, "./src") }, {
-        // this is required for the SCSS modules
-        find: /^~(.*)$/,
-        replacement: '$1',
-      }],
+      alias: [
+        { find: '@', replacement: path.resolve(import.meta.dirname, './src') },
+        {
+          // this is required for the SCSS modules
+          find: /^~(.*)$/,
+          replacement: '$1',
+        },
+      ],
     },
     plugins: [
-        vue(),
-        nodePolyfills(),
-        Components({
-          // allow auto load markdown components under `./src/components/`
-          extensions: ['vue', 'md'],
-          // allow auto import and register components used in markdown
-          include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-          resolvers: [
-            ElementPlusResolver({
-              importStyle: 'sass',
-            }),
-          ],
-          dts: 'src/components.d.ts',
-        }),
-
-        // https://github.com/antfu/unocss
-        // see unocss.config.ts for config
+      vue(),
+      nodePolyfills(),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        // allow auto load markdown components under `./src/components/`
+        extensions: ['vue', 'md'],
+        // allow auto import and register components used in markdown
+        include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: 'sass',
+          }),
+        ],
+        dts: 'src/components.d.ts',
+      }),
     ],
     build: {
       lib: {
-        entry: path.resolve(import.meta.dirname, "./src/components/index.js"),
-        name: "PlotVuer",
+        entry: path.resolve(import.meta.dirname, './src/components/index.js'),
+        name: 'PlotVuer',
         fileName: 'plotvuer',
       },
       build: {
-        commonjsOptions: { transformMixedEsModules: true } // Change
+        commonjsOptions: { transformMixedEsModules: true }, // Change
       },
       rollupOptions: {
-      external: ["vue", /^plotly.*/, "papaparse", /^@plotly.*/, /^d3-.*/],
+        external: ['vue', /^plotly.*/, 'papaparse', /^@plotly.*/, /^d3-.*/],
         output: {
           globals: {
-            vue: "Vue",
-            "papaparse": "papaparse"
+            vue: 'Vue',
+            papaparse: 'papaparse',
           },
           // keep css output name stable for the "./dist/style.css" export/import paths
           assetFileNames: (assetInfo) =>
-            assetInfo.name?.endsWith(".css")
-              ? "style.css"
-              : "assets/[name][extname]",
+            assetInfo.name?.endsWith('.css') ? 'style.css' : 'assets/[name][extname]',
         },
       },
     },
   };
 
   if (command === 'serve') {
-    config.server =  {
+    config.server = {
       port: 8081,
     };
     config.define = {
@@ -80,6 +79,6 @@ export default defineConfig(({ command, mode }) => {
       // If you want to exposes all env variables, which is not recommended
       // 'process.env': env
     };
-  };
+  }
   return config;
-})
+});
