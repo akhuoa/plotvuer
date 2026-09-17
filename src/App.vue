@@ -19,7 +19,8 @@
   width: 250px;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;

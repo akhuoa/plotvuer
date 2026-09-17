@@ -1,12 +1,12 @@
 <template>
   <div class="controls-container">
     <map-svg-sprite-color />
-    <div ref="zoomControls" :class="{inactive: !controlsEnabled}" class="bottom-right-control">
+    <div ref="zoomControls" :class="{ inactive: !controlsEnabled }" class="bottom-right-control">
       <el-popover
         v-model="hoverVisibilities[0].value"
         content="Zoom in"
         placement="left"
-        :teleported=false
+        :teleported="false"
         trigger="manual"
         popper-class="plot-popper"
       >
@@ -24,7 +24,7 @@
         v-model="hoverVisibilities[1].value"
         content="Zoom out"
         placement="top-end"
-        :teleported=false
+        :teleported="false"
         trigger="manual"
         popper-class="plot-popper popper-zoomout"
       >
@@ -50,15 +50,15 @@
           v-for="item in zoomSelect"
           :key="item.value"
           :label="item.label"
-          :value="item.label">
-        </el-option>
+          :value="item.label"
+        ></el-option>
       </el-select>
       <!-- The commented part remains unchanged -->
       <el-popover
         v-model="hoverVisibilities[2].value"
         content="Reset"
         placement="top"
-        :teleported=false
+        :teleported="false"
         trigger="manual"
         popper-class="plot-popper"
       >
@@ -90,149 +90,154 @@ export default {
     ElCollapse,
     ElCollapseItem,
     ElButton,
-    ElPopover
+    ElPopover,
   },
   props: {
     parentElement: {
       type: Object,
-      required: true
+      required: true,
     },
     controlsEnabled: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data: function () {
     return {
-      hoverVisibilities: [{value: false}, {value: false}, {value: false}, {value: false}, {value: false}],
+      hoverVisibilities: [
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
+      ],
       zoomSelect: [
         {
           value: '1',
-          label: '100%'
-        }
+          label: '100%',
+        },
       ],
       selectZoom: '100%',
       zoom: 100,
       maxZoom: 800,
       zoomInDisabled: false,
-      zoomOutDisabled: true
-    }
+      zoomOutDisabled: true,
+    };
   },
   methods: {
     // zoomIn: Find and click the plotly modebar 'zoom in'
     zoomIn: function () {
-      this.zoom += 100
-      this.parentElement.element.querySelector('a[data-attr="zoom"][data-val="in"]').click()
-      this.setDisabledButtons(this.zoom)
-      this.updateZoomSelect(this.zoom)
+      this.zoom += 100;
+      this.parentElement.element.querySelector('a[data-attr="zoom"][data-val="in"]').click();
+      this.setDisabledButtons(this.zoom);
+      this.updateZoomSelect(this.zoom);
     },
     // zoomOut: Find and click the plotly modebar 'zoom out'
     zoomOut: function () {
-      this.zoom -= 100
-      this.parentElement.element.querySelector('a[data-attr="zoom"][data-val="out"]').click()
-      this.setDisabledButtons(this.zoom)
-      this.updateZoomSelect(this.zoom)
+      this.zoom -= 100;
+      this.parentElement.element.querySelector('a[data-attr="zoom"][data-val="out"]').click();
+      this.setDisabledButtons(this.zoom);
+      this.updateZoomSelect(this.zoom);
     },
     // setDisabledButtons(zoomLevel): Disable buttons once they hit max zoom
     setDisabledButtons(zoom) {
       if (zoom >= this.maxZoom) {
-        this.zoomInDisabled = true
+        this.zoomInDisabled = true;
       } else {
-        this.zoomInDisabled = false
+        this.zoomInDisabled = false;
       }
       if (zoom <= 0) {
-        this.zoomOutDisabled = true
+        this.zoomOutDisabled = true;
       } else {
-        this.zoomOutDisabled = false
+        this.zoomOutDisabled = false;
       }
-      return
+      return;
     },
     resetView: function () {
-      this.zoom = 100
-      this.parentElement.element.querySelector('a[data-attr="zoom"][data-val="reset"]').click()
-      this.setDisabledButtons(this.zoom)
-      this.updateZoomSelect(this.zoom)
+      this.zoom = 100;
+      this.parentElement.element.querySelector('a[data-attr="zoom"][data-val="reset"]').click();
+      this.setDisabledButtons(this.zoom);
+      this.updateZoomSelect(this.zoom);
     },
     percentToNum(percentage) {
-      return Number(percentage.slice(0, -1))
+      return Number(percentage.slice(0, -1));
     },
     selectZoomChange: function (requestedZoomPercentage) {
       if (requestedZoomPercentage === '100%') {
-        this.resetView()
-        return
+        this.resetView();
+        return;
       }
-      let newZoom = this.percentToNum(requestedZoomPercentage)
-      let zoomDiff = Math.round((newZoom - this.zoom) / 100)
+      let newZoom = this.percentToNum(requestedZoomPercentage);
+      let zoomDiff = Math.round((newZoom - this.zoom) / 100);
       for (let i = 0; i < Math.abs(zoomDiff); i++) {
         if (zoomDiff > 0) {
-          this.zoomIn()
+          this.zoomIn();
         } else {
-          this.zoomOut()
+          this.zoomOut();
         }
       }
-      this.updateZoomSelect(newZoom)
+      this.updateZoomSelect(newZoom);
     },
     updateZoomSelect(percentage) {
-      this.selectZoom = String(percentage) + '%'
+      this.selectZoom = String(percentage) + '%';
     },
     createZoomPercentages: function () {
-      this.zoomSelect = []
+      this.zoomSelect = [];
       for (let i = 0; i <= this.maxZoom / 100; i++) {
         this.zoomSelect.push({
           value: i,
-          label: (i + 1) * 100 + '%'
-        })
+          label: (i + 1) * 100 + '%',
+        });
       }
     },
     setHelpMode: function (helpMode) {
       if (helpMode) {
-        this.inHelp = true
-        this.hoverVisibilities.forEach(item => {
-          item.value = true
-        })
+        this.inHelp = true;
+        this.hoverVisibilities.forEach((item) => {
+          item.value = true;
+        });
       } else {
-        this.inHelp = false
-        this.hoverVisibilities.forEach(item => {
-          item.value = false
-        })
+        this.inHelp = false;
+        this.hoverVisibilities.forEach((item) => {
+          item.value = false;
+        });
       }
     },
     showToolitip: function (tooltipNumber) {
       if (!this.inHelp) {
-        this.hoverVisibilities[tooltipNumber].value = true
+        this.hoverVisibilities[tooltipNumber].value = true;
         this.tooltipWait = setTimeout(() => {
-          this.hoverVisibilities[tooltipNumber].value = true
-        }, 1000)
+          this.hoverVisibilities[tooltipNumber].value = true;
+        }, 1000);
       }
     },
     hideToolitip: function (tooltipNumber) {
       if (!this.inHelp) {
-        this.hoverVisibilities[tooltipNumber].value = false
-        clearInterval(this.tooltipWait)
+        this.hoverVisibilities[tooltipNumber].value = false;
+        clearInterval(this.tooltipWait);
       }
     },
     handleWheel: function (event) {
-      let change = Math.round(event.deltaY / 7)
-      this.zoom = this.zoom - change
-      this.updateZoomSelect(this.zoom)
-    }
+      let change = Math.round(event.deltaY / 7);
+      this.zoom = this.zoom - change;
+      this.updateZoomSelect(this.zoom);
+    },
   },
   mounted: function () {
-    this.createZoomPercentages()
+    this.createZoomPercentages();
     setTimeout(() => {
       if (this.parentElement?.element) {
-        this.parentElement.element.addEventListener('wheel', this.handleWheel)
+        this.parentElement.element.addEventListener('wheel', this.handleWheel);
       }
-    }, 1000)
+    }, 1000);
   },
   beforeUnmount: function () {
     if (this.parentElement?.element) {
-      this.parentElement.element.removeEventListener('wheel', this.handleWheel)
+      this.parentElement.element.removeEventListener('wheel', this.handleWheel);
     }
-  }
-}
+  },
+};
 </script>
-
 
 <style scoped>
 @import '../assets/bottom-right-control.scss';
@@ -341,10 +346,9 @@ export default {
   max-height: 24px !important;
   margin-left: 8px;
   margin-bottom: 12px;
-
 }
 
-.zoomSelect :deep( .el-input__inner ){
+.zoomSelect :deep(.el-input__inner) {
   padding: 0px;
   height: 24px;
   padding-left: 4px;
@@ -352,7 +356,7 @@ export default {
   margin-left: 8px;
 }
 
-.zoomSelect :deep( .el-select__caret ){
+.zoomSelect :deep(.el-select__caret) {
   width: 8px;
   margin-right: 2px;
   margin-top: 2px;
