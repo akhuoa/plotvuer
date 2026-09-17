@@ -77,7 +77,6 @@
 </template>
 
 <script>
-import { ElSelect, ElOption, ElCollapse, ElCollapseItem, ElButton, ElPopover } from 'element-plus';
 import { MapSvgSpriteColor, MapSvgIcon } from '@abi-software/svg-sprite';
 
 export default {
@@ -85,12 +84,6 @@ export default {
   components: {
     MapSvgSpriteColor,
     MapSvgIcon,
-    ElSelect,
-    ElOption,
-    ElCollapse,
-    ElCollapseItem,
-    ElButton,
-    ElPopover,
   },
   props: {
     parentElement: {

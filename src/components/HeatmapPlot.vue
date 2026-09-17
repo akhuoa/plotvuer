@@ -49,18 +49,8 @@ import DataManager from '@/js/data_manager';
 import PlotCommon from '@/mixins/plot_common';
 import Plotly from '@/js/custom_plotly';
 
-import { ElSelect, ElOption, ElCollapse, ElCollapseItem, ElButton, ElPopover } from 'element-plus';
-
 export default {
   name: 'HeatmapPlot',
-  components: {
-    ElSelect,
-    ElOption,
-    ElCollapse,
-    ElCollapseItem,
-    ElButton,
-    ElPopover,
-  },
   mixins: [PlotCommon],
   data: function () {
     return {

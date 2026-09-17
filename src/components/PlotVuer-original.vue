@@ -124,18 +124,9 @@
 <script>
 /* eslint-disable no-alert, no-console */
 import Plotly from '../js/custom_plotly';
-import Vue from 'vue';
-import { Select, Option, Collapse, CollapseItem, Button, Popover } from 'element-ui';
 import { MapSvgSpriteColor, MapSvgIcon } from '@abi-software/svg-sprite';
 import CsvManager from './csv_manager';
 import ReziseSensor from 'css-element-queries/src/ResizeSensor';
-
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(Collapse);
-Vue.use(CollapseItem);
-Vue.use(Button);
-Vue.use(Popover);
 
 export default {
   name: 'PlotVuer',
