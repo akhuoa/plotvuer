@@ -109,7 +109,7 @@ class Sparccsv {
   }
 
   getByAxes(channelx, channely) {
-    var dx = [];
+    var dx;
     var c1 = this.getColoumnByIndex(0);
     var index = [];
     for (let i in channely) {
@@ -154,8 +154,8 @@ class Sparccsv {
   }
 
   downloadCSV = (args) => {
-    /* Use like so: 
-     downloadCSV({ 
+    /* Use like so:
+     downloadCSV({
       filename: 'filename.csv',
       data: [{'a': '1', 'b': '2'}],
       columns: ['a','b']
