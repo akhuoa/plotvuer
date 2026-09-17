@@ -179,7 +179,6 @@ export default {
         for (let col of this.fullMetadata['y-axes-columns']) {
           this.traceNames.push(this.traceData.data[0][col]);
         }
-        this.$set(this.traceNames, 0, this.traceNames[0]);
       } else {
         this.traceNames = [];
         for (let col of this.fullMetadata['y-axes-columns']) {

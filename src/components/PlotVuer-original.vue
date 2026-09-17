@@ -61,14 +61,15 @@
         trigger="manual"
         popper-class="plot-popper"
       >
-        <map-svg-icon
-          slot="reference"
-          icon="zoomIn"
-          class="icon-button zoomIn"
-          @click.native="zoomIn()"
-          @mouseover.native="showToolitip(0)"
-          @mouseout.native="hideToolitip(0)"
-        />
+        <template v-slot:reference>
+          <map-svg-icon
+            icon="zoomIn"
+            class="icon-button zoomIn"
+            @click="zoomIn()"
+            @mouseover="showToolitip(0)"
+            @mouseout="hideToolitip(0)"
+          />
+        </template>
       </el-popover>
       <el-popover
         v-model="hoverVisibilities[1].value"
@@ -78,14 +79,15 @@
         trigger="manual"
         popper-class="plot-popper popper-zoomout"
       >
-        <map-svg-icon
-          slot="reference"
-          icon="zoomOut"
-          class="icon-button zoomOut"
-          @click.native="zoomOut()"
-          @mouseover.native="showToolitip(1)"
-          @mouseout.native="hideToolitip(1)"
-        />
+        <template v-slot:reference>
+          <map-svg-icon
+            icon="zoomOut"
+            class="icon-button zoomOut"
+            @click="zoomOut()"
+            @mouseover="showToolitip(1)"
+            @mouseout="hideToolitip(1)"
+          />
+        </template>
       </el-popover>
       <el-select
         v-model="selectZoom"
@@ -109,20 +111,20 @@
         trigger="manual"
         popper-class="plot-popper"
       >
-        <map-svg-icon
-          slot="reference"
-          icon="resetZoom"
-          class="icon-button resetView"
-          @click.native="resetView()"
-          @mouseover.native="showToolitip(2)"
-          @mouseout.native="hideToolitip(2)"
-        />
+        <template v-slot:reference>
+          <map-svg-icon
+            icon="resetZoom"
+            class="icon-button resetView"
+            @click="resetView()"
+            @mouseover="showToolitip(2)"
+            @mouseout="hideToolitip(2)"
+          />
+        </template>
       </el-popover>
     </div>
   </div>
 </template>
 <script>
-/* eslint-disable no-alert, no-console */
 import Plotly from '../js/custom_plotly';
 import { MapSvgSpriteColor, MapSvgIcon } from '@abi-software/svg-sprite';
 import CsvManager from './csv_manager';
@@ -217,7 +219,7 @@ export default {
   },
   computed: {
     ui: function () {
-      var ui = {};
+      let ui;
       if (this.plotType === 'heatmap') {
         ui = {
           button: 'View Heatmap',
@@ -270,12 +272,12 @@ export default {
     this.$watch('options', this.react, { deep: !this.watchShallow });
     this.$watch('layout', this.relayout, { deep: !this.watchShallow });
   },
-  destroyed() {
+  unmounted() {
     if (this.$refs.container) {
       this.$refs.container.removeEventListener('wheel', this.handleWheel);
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.__generalListeners) {
       this.__generalListeners.forEach((obj) =>
         this.$refs.container.removeAllListeners(obj.fullName),
