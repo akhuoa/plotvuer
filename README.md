@@ -18,29 +18,35 @@ Demo the site functionality of this app [here](https://plotvuer-demo.herokuapp.c
 **Don't feel like coding? See how to copy and paste plotvuer as an HTML widget [here](https://github.com/ABI-Software/plotvuer/blob/master/README.md#copy-and-paste-as-an-html-widget)**
 
 ## Project installation
+
 ```
 npm i @abi-software/plotvuer
 ```
 
-
 ## Project setup
+
 ```
 npm install
 npm run serve
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build-bundle
 ```
 
 ## How to use
+
 Include the package in your script.
+
 ```javascript
-import { PlotVuer } from '@abi-software/plotvuer'
-import '@abi-software/plotvuer/dist/plotvuer.css'
+import { PlotVuer } from '@abi-software/plotvuer';
+import '@abi-software/plotvuer/dist/plotvuer.css';
 ```
+
 Local registration in vue component:
+
 ```javascript
 export default {
   ...
@@ -94,39 +100,40 @@ let metadata = {
 }
 
 ```
+
 Note that these are the same inputs for data and layout as plotly normally takes in [`Plotly.newPlot()`](https://plotly.com/javascript/plotlyjs-function-reference/)
 
 ##### Sending plotly a csv file url
 
 ```javascript
 let data = {
-  url : 'https://example.com/myfile.csv'
-}
+  url: 'https://example.com/myfile.csv',
+};
 
-
-let metadata= {
+let metadata = {
   version: '1.1.0',
   type: 'plot',
   attrs: {
     'x-axis-column': 2, // **Optional**
     style: 'timeseries',
     'y-axes-columns': [3, 4, 5, 6, 7, 8, 9, 10], // **Optional**
-    'plot-layout': { // **Optional**
+    'plot-layout': {
+      // **Optional**
       height: '700px',
       margin: {
         t: 35,
         l: 85,
         r: 55,
         b: 190,
-        pad: 4
-      }
-    }
-  }
-}
+        pad: 4,
+      },
+    },
+  },
+};
 
 let supplementalData = {
-  url : 'https://example.com/mySupplementalFile.json'
-}
+  url: 'https://example.com/mySupplementalFile.json',
+};
 ```
 
 ## CSV file formatting
@@ -135,25 +142,24 @@ let supplementalData = {
 
 ### Example 1. Heatmap data
 
-|               | Gene 1  | Gene 2 |
-| :------------ |:--------|  ------|
-| Sample 1      | -1.54 | -3.40 |
-| Sample 2      | 0.68       |   1.22 |
-| Sample 3      | 0.05      |    0.66 |
-
+|          | Gene 1 | Gene 2 |
+| :------- | :----- | ------ |
+| Sample 1 | -1.54  | -3.40  |
+| Sample 2 | 0.68   | 1.22   |
+| Sample 3 | 0.05   | 0.66   |
 
 ### Example 2. Timeseries data
 
-
-| time (seconds)| Sweep 0_Membrane Potential (mV) |
-| :------------ |:--------|
-| 0     | -70.12939453 |
-| 0.0002    | -70.12939453     |
-| 0.0004      | -70.34301758      |
-
+| time (seconds) | Sweep 0_Membrane Potential (mV) |
+| :------------- | :------------------------------ |
+| 0              | -70.12939453                    |
+| 0.0002         | -70.12939453                    |
+| 0.0004         | -70.34301758                    |
 
 ## Copy and paste as an HTML widget
+
 Paste the following lines in the `<body>` of you HTML
+
 ```HTML
  <!-- Modify the 'file' input to point to a csv file you wish to show -->
  <plot-vuer-widget file="https://mapcore-bucket1.s3-us-west-2.amazonaws.com/ISAN/csv-data/use-case-4/RNA_Seq.csv"></plot-vuer-widget>
@@ -162,8 +168,11 @@ Paste the following lines in the `<body>` of you HTML
  <!-- widget source js from cdn -->
  <script src="https://cdn.jsdelivr.net/npm/@tehsurfer/plotvuer-widget/dist/plotVuer.js"></script>
 ```
+
 ### Modifying input file for widget
+
 Change this line to point at a csv file for display
+
 ```HTML
  <!-- Modify the 'file' input to point to a csv file you wish to show -->
  <plot-vuer-widget file="./path/to/file.csv"></plot-vuer-widget>
@@ -174,6 +183,7 @@ Change this line to point at a csv file for display
 The documentation is developed with `vitepress` and `vuese`. Documentation pages are in the `docs` folder.
 
 ### To run in local development mode
+
 ```bash
 npm run docs:watch
 ```

@@ -17,7 +17,12 @@
             :popper-append-to-body="false"
             :placeholder="ui.placeholderx"
           >
-            <el-option v-for="item in allChannelsX" :key="item" :label="item" :value="item"></el-option>
+            <el-option
+              v-for="item in allChannelsX"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
         </span>
         <span v-if="ui.showSecondSelector">
@@ -32,7 +37,12 @@
             :popper-append-to-body="false"
             :placeholder="ui.placeholdery"
           >
-            <el-option v-for="item in allChannelsY" :key="item" :label="item" :value="item"></el-option>
+            <el-option
+              v-for="item in allChannelsY"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
         </span>
         <span>
@@ -51,14 +61,15 @@
         trigger="manual"
         popper-class="plot-popper"
       >
-        <map-svg-icon
-          slot="reference"
-          icon="zoomIn"
-          class="icon-button zoomIn"
-          @click.native="zoomIn()"
-          @mouseover.native="showToolitip(0)"
-          @mouseout.native="hideToolitip(0)"
-        />
+        <template v-slot:reference>
+          <map-svg-icon
+            icon="zoomIn"
+            class="icon-button zoomIn"
+            @click="zoomIn()"
+            @mouseover="showToolitip(0)"
+            @mouseout="hideToolitip(0)"
+          />
+        </template>
       </el-popover>
       <el-popover
         v-model="hoverVisibilities[1].value"
@@ -68,17 +79,29 @@
         trigger="manual"
         popper-class="plot-popper popper-zoomout"
       >
-        <map-svg-icon
-          slot="reference"
-          icon="zoomOut"
-          class="icon-button zoomOut"
-          @click.native="zoomOut()"
-          @mouseover.native="showToolitip(1)"
-          @mouseout.native="hideToolitip(1)"
-        />
+        <template v-slot:reference>
+          <map-svg-icon
+            icon="zoomOut"
+            class="icon-button zoomOut"
+            @click="zoomOut()"
+            @mouseover="showToolitip(1)"
+            @mouseout="hideToolitip(1)"
+          />
+        </template>
       </el-popover>
-      <el-select v-model="selectZoom" size="mini" placeholder="100%" class="zoomSelect" @change="selectZoomChange">
-        <el-option v-for="item in zoomSelect" :key="item.value" :label="item.label" :value="item.label"> </el-option>
+      <el-select
+        v-model="selectZoom"
+        size="mini"
+        placeholder="100%"
+        class="zoomSelect"
+        @change="selectZoomChange"
+      >
+        <el-option
+          v-for="item in zoomSelect"
+          :key="item.value"
+          :label="item.label"
+          :value="item.label"
+        ></el-option>
       </el-select>
       <el-popover
         v-model="hoverVisibilities[2].value"
@@ -88,75 +111,66 @@
         trigger="manual"
         popper-class="plot-popper"
       >
-        <map-svg-icon
-          slot="reference"
-          icon="resetZoom"
-          class="icon-button resetView"
-          @click.native="resetView()"
-          @mouseover.native="showToolitip(2)"
-          @mouseout.native="hideToolitip(2)"
-        />
+        <template v-slot:reference>
+          <map-svg-icon
+            icon="resetZoom"
+            class="icon-button resetView"
+            @click="resetView()"
+            @mouseover="showToolitip(2)"
+            @mouseout="hideToolitip(2)"
+          />
+        </template>
       </el-popover>
     </div>
   </div>
 </template>
 <script>
-/* eslint-disable no-alert, no-console */
-import Plotly from '../js/custom_plotly'
-import Vue from 'vue'
-import {Select, Option, Collapse, CollapseItem, Button, Popover} from 'element-ui'
-import {MapSvgSpriteColor, MapSvgIcon} from '@abi-software/svg-sprite'
-import CsvManager from './csv_manager'
-import ReziseSensor from 'css-element-queries/src/ResizeSensor'
-
-Vue.use(Select)
-Vue.use(Option)
-Vue.use(Collapse)
-Vue.use(CollapseItem)
-Vue.use(Button)
-Vue.use(Popover)
+import Plotly from '../js/custom_plotly';
+import { MapSvgSpriteColor, MapSvgIcon } from '@abi-software/svg-sprite';
+import CsvManager from './csv_manager';
+import ReziseSensor from 'css-element-queries/src/ResizeSensor';
 
 export default {
   name: 'PlotVuer',
   components: {
     MapSvgSpriteColor,
-    MapSvgIcon
+    MapSvgIcon,
   },
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     url: {
       type: String,
-      default: ''
+      default: '',
     },
     dataInput: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     plotType: {
       type: String,
-      default: 'heatmap'
+      default: 'heatmap',
     },
     yAxisFilter: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     xAxisFilter: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     helpMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data: function () {
     return {
       allChannelsX: [],
       allChannelsY: [],
-      data: [{x: [], y: [], type: 'scatter'}],
+      data: [{ x: [], y: [], type: 'scatter' }],
       layout: {
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
@@ -165,19 +179,25 @@ export default {
           l: 55,
           r: 55,
           b: 90,
-          pad: 4
+          pad: 4,
         },
-        dragmode: 'pan'
+        dragmode: 'pan',
       },
       options: {
-        type: Object
+        type: Object,
       },
-      hoverVisibilities: [{value: false}, {value: false}, {value: false}, {value: false}, {value: false}],
+      hoverVisibilities: [
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
+      ],
       zoomSelect: [
         {
           value: '1',
-          label: '100%'
-        }
+          label: '100%',
+        },
       ],
       selectZoom: '100%',
       zoom: 100,
@@ -193,13 +213,13 @@ export default {
       selected: [],
       internalLayout: {
         ...this.layout,
-        datarevision: 1
-      }
-    }
+        datarevision: 1,
+      },
+    };
   },
   computed: {
     ui: function () {
-      var ui = {}
+      let ui;
       if (this.plotType === 'heatmap') {
         ui = {
           button: 'View Heatmap',
@@ -207,8 +227,8 @@ export default {
           placeholderx: 'Select gene',
           placeholdery: 'Select cell/sample',
           showFirstSelector: true,
-          showSecondSelector: true
-        }
+          showSecondSelector: true,
+        };
       } else {
         ui = {
           button: 'View Plot',
@@ -216,128 +236,130 @@ export default {
           placeholderx: 'Select channel',
           placeholdery: 'Select gene',
           showFirstSelector: true,
-          showSecondSelector: false
-        }
+          showSecondSelector: false,
+        };
       }
-      return ui
-    }
+      return ui;
+    },
   },
   watch: {
     dataInput: function () {
-      this.loadData(this.dataInput)
+      this.loadData(this.dataInput);
     },
     helpMode: function (val) {
-      this.setHelpMode(val)
-    }
+      this.setHelpMode(val);
+    },
   },
   mounted() {
-    this.$refs.container.addEventListener('wheel', this.handleWheel)
-    this.createZoomPercentages()
+    this.$refs.container.addEventListener('wheel', this.handleWheel);
+    this.createZoomPercentages();
     if (this.url != '') {
-      this.loadURL(this.url)
-      this.react()
+      this.loadURL(this.url);
+      this.react();
     } else if (this.dataInput.length != 0) {
-      this.loadData(this.dataInput)
+      this.loadData(this.dataInput);
     }
-    this.handleResize()
+    this.handleResize();
     this.$watch(
       'data',
       () => {
-        this.internalLayout.datarevision++
-        this.react()
+        this.internalLayout.datarevision++;
+        this.react();
       },
-      {deep: !this.watchShallow}
-    )
+      { deep: !this.watchShallow },
+    );
 
-    this.$watch('options', this.react, {deep: !this.watchShallow})
-    this.$watch('layout', this.relayout, {deep: !this.watchShallow})
+    this.$watch('options', this.react, { deep: !this.watchShallow });
+    this.$watch('layout', this.relayout, { deep: !this.watchShallow });
   },
-  destroyed() {
+  unmounted() {
     if (this.$refs.container) {
-      this.$refs.container.removeEventListener('wheel', this.handleWheel)
+      this.$refs.container.removeEventListener('wheel', this.handleWheel);
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.__generalListeners) {
-      this.__generalListeners.forEach(obj => this.$refs.container.removeAllListeners(obj.fullName))
+      this.__generalListeners.forEach((obj) =>
+        this.$refs.container.removeAllListeners(obj.fullName),
+      );
     }
-    Plotly.purge(this.$refs.container)
+    Plotly.purge(this.$refs.container);
   },
   methods: {
     loadData: function (data) {
       // Send data to plotly directly if 'plotly-only' is specified
       if (this.plotType === 'plotly-only') {
-        Plotly.newPlot(this.$refs.container, this.dataInput, this.layout, this.getOptions())
-        return
+        Plotly.newPlot(this.$refs.container, this.dataInput, this.layout, this.getOptions());
+        return;
       } else {
         // Else we treat the data as if it was in csv format
         this.csv.loadData(data).then(() => {
-          this.findTypeThenPlot()
-        })
+          this.findTypeThenPlot();
+        });
       }
     },
     // loadURL: Takes a url pointing to a csv file as input and plots it
     loadURL: function (url) {
       this.csv.loadFile(url).then(() => {
-        this.findTypeThenPlot()
-      })
+        this.findTypeThenPlot();
+      });
     },
     // findTypeThenPlot: Check the inputs (props) to Plotvuer and plot accordingly
     findTypeThenPlot: function () {
-      this.allChannelsX = this.csv.getHeadersExceptForFirst()
-      this.allChannelsY = this.csv.getColoumnByIndex(0)
+      this.allChannelsX = this.csv.getHeadersExceptForFirst();
+      this.allChannelsY = this.csv.getColoumnByIndex(0);
       // Check if plot type is provided
       if (this.plotType === 'heatmap') {
         // Check if filters are definded
         if (this.yAxisFilter.length > 1) {
-          this.channelx = this.yAxisFilter
-          this.channely = this.xAxisFilter
-          this.heatmapPlotWithFilters()
+          this.channelx = this.yAxisFilter;
+          this.channely = this.xAxisFilter;
+          this.heatmapPlotWithFilters();
         }
         // Plot all data if no filters are defined
         else {
-          this.heatmapPlotAll()
+          this.heatmapPlotAll();
         }
       } else {
         // If no plot type is defined, we attempt to deduce it with 'getDataType'
-        this.data[0].x = this.csv.getColoumnByIndex(0)
-        this.data[0].y = this.csv.getColoumnByIndex(1)
-        this.data[0].type = this.csv.getDataType()
-        this.plot_channel(this.csv.getHeaderByIndex(1))
-        Plotly.newPlot(this.$refs.container, this.data, this.layout, this.getOptions())
+        this.data[0].x = this.csv.getColoumnByIndex(0);
+        this.data[0].y = this.csv.getColoumnByIndex(1);
+        this.data[0].type = this.csv.getDataType();
+        this.plot_channel(this.csv.getHeaderByIndex(1));
+        Plotly.newPlot(this.$refs.container, this.data, this.layout, this.getOptions());
       }
     },
     // plot_channel: plot a singular channel from a given coloumn name
     plot_channel: function (channel = false) {
       if (channel) {
-        this.data[0].x = this.csv.getColoumnByIndex(0)
-        this.data[0].y = this.csv.getColoumnByName(channel)
-        this.data[0].type = this.csv.getDataType()
+        this.data[0].x = this.csv.getColoumnByIndex(0);
+        this.data[0].y = this.csv.getColoumnByName(channel);
+        this.data[0].type = this.csv.getDataType();
       }
     },
     // timeseriesSelectedChannelsPlot: Plot all selected channels
     timeseriesSelectedChannelsPlot: function () {
-      this.data = []
+      this.data = [];
       for (let i in this.channelx) {
-        this.data.push([])
-        this.data[i].x = this.csv.getColoumnByIndex(0)
-        this.data[i].y = this.csv.getColoumnByName(this.channelx[i])
-        this.data[i].type = this.csv.getDataType()
+        this.data.push([]);
+        this.data[i].x = this.csv.getColoumnByIndex(0);
+        this.data[i].y = this.csv.getColoumnByName(this.channelx[i]);
+        this.data[i].type = this.csv.getDataType();
       }
-      Plotly.react(this.$refs.container, this.data, this.layout, this.getOptions())
+      Plotly.react(this.$refs.container, this.data, this.layout, this.getOptions());
     },
     // heatmapPlotWithFilters: Plot a heatmap with given x and y filters
     heatmapPlotWithFilters: function () {
-      var data = this.csv.getByAxes(this.channelx, this.channely)
+      var data = this.csv.getByAxes(this.channelx, this.channely);
       var tdata = [
         {
           z: data,
           x: this.channelx,
           y: this.channely,
-          type: 'heatmap'
-        }
-      ]
-      Plotly.react(this.$refs.container, tdata, this.layout, this.getOptions())
+          type: 'heatmap',
+        },
+      ];
+      Plotly.react(this.$refs.container, tdata, this.layout, this.getOptions());
     },
     // heatmapPlotAll: plot all data avialable for heatmap
     heatmapPlotAll: function () {
@@ -346,10 +368,10 @@ export default {
           z: this.csv.getDataValuesOnly(),
           x: this.csv.getHeadersExceptForFirst(),
           y: this.csv.getColoumnByIndex(0),
-          type: 'heatmap'
-        }
-      ]
-      Plotly.react(this.$refs.container, tdata, this.layout, this.getOptions())
+          type: 'heatmap',
+        },
+      ];
+      Plotly.react(this.$refs.container, tdata, this.layout, this.getOptions());
     },
     // handleResize: listener to resize plotly canvas and redraw
     handleResize: function () {
@@ -358,130 +380,132 @@ export default {
         //   "Width now:" + this.$el.clientWidth + " Height now: " + (this.$el.parentElement.clientHeight - this.$refs.selectBox.$el.clientHeight)
         Plotly.relayout(this.$refs.container, {
           width: this.$el.clientWidth,
-          height: String(this.$el.parentElement.clientHeight - this.$refs.controls.clientHeight - 10)
-        })
-      })
+          height: String(
+            this.$el.parentElement.clientHeight - this.$refs.controls.clientHeight - 10,
+          ),
+        });
+      });
     },
     // zoomIn: Find and click the plotly modebar 'zoom in'
     zoomIn: function () {
-      this.zoom += 100
-      this.$el.querySelector('a[data-attr="zoom"][data-val="in"]').click()
-      this.setDisabledButtons(this.zoom)
-      this.updateZoomSelect(this.zoom)
+      this.zoom += 100;
+      this.$el.querySelector('a[data-attr="zoom"][data-val="in"]').click();
+      this.setDisabledButtons(this.zoom);
+      this.updateZoomSelect(this.zoom);
     },
     // zoomOut: Find and click the plotly modebar 'zoom out'
     zoomOut: function () {
-      this.zoom -= 100
-      this.$el.querySelector('a[data-attr="zoom"][data-val="out"]').click()
-      this.setDisabledButtons(this.zoom)
-      this.updateZoomSelect(this.zoom)
+      this.zoom -= 100;
+      this.$el.querySelector('a[data-attr="zoom"][data-val="out"]').click();
+      this.setDisabledButtons(this.zoom);
+      this.updateZoomSelect(this.zoom);
     },
     // setDisabledButtons(zoomLevel): Disable buttons once they hit max zoom
     setDisabledButtons(zoom) {
       if (zoom === this.maxZoom) {
-        this.zoomInDisabled = true
+        this.zoomInDisabled = true;
       } else {
-        this.zoomInDisabled = false
+        this.zoomInDisabled = false;
       }
       if (zoom === 0) {
-        this.zoomOutDisabled = true
+        this.zoomOutDisabled = true;
       } else {
-        this.zoomOutDisabled = false
+        this.zoomOutDisabled = false;
       }
-      return
+      return;
     },
     resetView: function () {
-      this.zoom = 100
-      this.$el.querySelector('a[data-attr="zoom"][data-val="reset"]').click()
-      this.setDisabledButtons(this.zoom)
-      this.updateZoomSelect(this.zoom)
+      this.zoom = 100;
+      this.$el.querySelector('a[data-attr="zoom"][data-val="reset"]').click();
+      this.setDisabledButtons(this.zoom);
+      this.updateZoomSelect(this.zoom);
     },
     percentToNum(percentage) {
-      return Number(percentage.slice(0, -1))
+      return Number(percentage.slice(0, -1));
     },
     selectZoomChange: function (requestedZoomPercentage) {
       if (requestedZoomPercentage === '100%') {
-        this.resetView()
-        return
+        this.resetView();
+        return;
       }
-      let newZoom = this.percentToNum(requestedZoomPercentage)
-      let zoomDiff = Math.round((newZoom - this.zoom) / 100)
+      let newZoom = this.percentToNum(requestedZoomPercentage);
+      let zoomDiff = Math.round((newZoom - this.zoom) / 100);
       for (let i = 0; i < Math.abs(zoomDiff); i++) {
         if (zoomDiff > 0) {
-          this.zoomIn()
+          this.zoomIn();
         } else {
-          this.zoomOut()
+          this.zoomOut();
         }
       }
-      this.updateZoomSelect(newZoom)
+      this.updateZoomSelect(newZoom);
     },
     updateZoomSelect(percentage) {
-      this.selectZoom = String(percentage) + '%'
+      this.selectZoom = String(percentage) + '%';
     },
     createZoomPercentages: function () {
-      this.zoomSelect = []
+      this.zoomSelect = [];
       for (let i = 0; i <= this.maxZoom / 100; i++) {
         this.zoomSelect.push({
           value: i,
-          label: (i + 1) * 100 + '%'
-        })
+          label: (i + 1) * 100 + '%',
+        });
       }
     },
     setHelpMode: function (helpMode) {
       if (helpMode) {
-        this.inHelp = true
-        this.hoverVisibilities.forEach(item => {
-          item.value = true
-        })
+        this.inHelp = true;
+        this.hoverVisibilities.forEach((item) => {
+          item.value = true;
+        });
       } else {
-        this.inHelp = false
-        this.hoverVisibilities.forEach(item => {
-          item.value = false
-        })
+        this.inHelp = false;
+        this.hoverVisibilities.forEach((item) => {
+          item.value = false;
+        });
       }
     },
     showToolitip: function (tooltipNumber) {
       if (!this.inHelp) {
-        this.hoverVisibilities[tooltipNumber].value = true
+        this.hoverVisibilities[tooltipNumber].value = true;
         this.tooltipWait = setTimeout(() => {
-          this.hoverVisibilities[tooltipNumber].value = true
-        }, 1000)
+          this.hoverVisibilities[tooltipNumber].value = true;
+        }, 1000);
       }
     },
     hideToolitip: function (tooltipNumber) {
       if (!this.inHelp) {
-        this.hoverVisibilities[tooltipNumber].value = false
-        clearInterval(this.tooltipWait)
+        this.hoverVisibilities[tooltipNumber].value = false;
+        clearInterval(this.tooltipWait);
       }
     },
     handleWheel: function (event) {
-      let change = Math.round(event.deltaY / 7)
-      this.zoom = this.zoom - change
-      this.updateZoomSelect(this.zoom)
+      let change = Math.round(event.deltaY / 7);
+      this.zoom = this.zoom - change;
+      this.updateZoomSelect(this.zoom);
     },
     plot() {
-      return Plotly.plot(this.$refs.container, this.data, this.layout, this.getOptions())
+      return Plotly.plot(this.$refs.container, this.data, this.layout, this.getOptions());
     },
     getOptions() {
-      let el = this.$refs.container
-      let opts = this.options
+      let el = this.$refs.container;
+      let opts = this.options;
 
       // if width/height is not specified for toImageButton, default to el.clientWidth/clientHeight
-      if (!opts) opts = {}
-      if (!opts.toImageButtonOptions) opts.toImageButtonOptions = {}
-      if (!opts.toImageButtonOptions.width) opts.toImageButtonOptions.width = el.clientWidth
-      if (!opts.toImageButtonOptions.height) opts.toImageButtonOptions.height = el.clientHeight
-      opts.scrollZoom = true
-      return opts
+      if (!opts) opts = {};
+      if (!opts.toImageButtonOptions) opts.toImageButtonOptions = {};
+      if (!opts.toImageButtonOptions.width) opts.toImageButtonOptions.width = el.clientWidth;
+      if (!opts.toImageButtonOptions.height) opts.toImageButtonOptions.height = el.clientHeight;
+      opts.scrollZoom = true;
+      return opts;
     },
     newPlot() {
-      return Plotly.newPlot(this.$refs.container, this.data, this.layout, this.getOptions())
+      return Plotly.newPlot(this.$refs.container, this.data, this.layout, this.getOptions());
     },
     react() {
-      return Plotly.react(this.$refs.container, this.data, this.layout, this.getOptions())
-    }
-  }
-}
+      return Plotly.react(this.$refs.container, this.data, this.layout, this.getOptions());
+    },
+  },
+};
 </script>
 
 <style scoped src="element-ui/lib/theme-chalk/index.css"></style>
@@ -584,7 +608,7 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.zoomSelect :deep( .el-input__inner ){
+.zoomSelect :deep(.el-input__inner) {
   padding: 0px;
   height: 24px;
   padding-left: 4px;
@@ -592,7 +616,7 @@ export default {
   margin-left: 8px;
 }
 
-.zoomSelect :deep( .el-select__caret ){
+.zoomSelect :deep(.el-select__caret) {
   width: 8px;
   margin-right: 2px;
   margin-top: 2px;

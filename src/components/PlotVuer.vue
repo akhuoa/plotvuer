@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import TimeseriesPlot from './TimeseriesPlot.vue'
-import HeatmapPlot from './HeatmapPlot.vue'
-const KNOWN_VERSIONS = ['1.2.0', '1.1.0']
+import TimeseriesPlot from './TimeseriesPlot.vue';
+import HeatmapPlot from './HeatmapPlot.vue';
+const KNOWN_VERSIONS = ['1.2.0', '1.1.0'];
 
 export default {
   name: 'PlotVuer',
@@ -33,7 +33,7 @@ export default {
     dataSource: {
       type: Object,
       required: true,
-      default: () => {}
+      default: () => {},
     },
     /**
      * The metadata object
@@ -43,8 +43,8 @@ export default {
       type: Object,
       required: true,
       validator: function (value) {
-        return KNOWN_VERSIONS.includes(value.version) && value.type === 'plot'
-      }
+        return KNOWN_VERSIONS.includes(value.version) && value.type === 'plot';
+      },
     },
     /**
      * The plotLayout for UI.
@@ -80,41 +80,41 @@ export default {
             l: 55,
             r: 55,
             b: 90,
-            pad: 4
+            pad: 4,
           },
           loading: false,
           options: {
             responsive: true,
-            scrollZoom: true
-         }
-        }
-      }
+            scrollZoom: true,
+          },
+        };
+      },
     },
     /**
      * The supplemental data to load.
      */
     supplementalData: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     /**
      * The option to choose helpMode.
      */
     helpMode: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * The option to show the selector UI.
      */
     selectorUi: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   computed: {
     plotType: function () {
-      return this.metadata.attrs.style + '-plot'
+      return this.metadata.attrs.style + '-plot';
     },
     layout: function () {
       // return layout in metadat if it exists. If not use the prop
@@ -124,13 +124,12 @@ export default {
             ? this.metadata.attrs.layout
             : this.plotLayout
           : this.plotLayout
-        : this.plotLayout
-      return layout
-    }
+        : this.plotLayout;
+      return layout;
+    },
   },
-}
+};
 </script>
-
 
 <style scoped>
 .plotvuer_parent {

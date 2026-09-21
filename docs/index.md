@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "PlotVuer"
-  text: "API documentation"
+  name: 'PlotVuer'
+  text: 'API documentation'
   tagline: PlotVuer is a Vue component used in the SPARC portal.
   actions:
     - theme: brand

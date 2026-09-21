@@ -1,29 +1,29 @@
 <template>
-  <Vue3DraggableResizable
-    :initW="410"
-    :initH="420"
-    :draggable="true"
-    :resizable="true"
-  >
+  <Vue3DraggableResizable :initW="410" :initH="420" :draggable="true" :resizable="true">
     <div class="plot-container">
       <h1>Plot of timeseries data</h1>
-      <plot-vuer :data-source="{url: urlList[1]}" :metadata="metadata" :supplemental-data="[{url: urlList[4]}]" :selectorUi="true" :plotLayout="plotLayout" />
+      <plot-vuer
+        :data-source="{ url: urlList[1] }"
+        :metadata="metadata"
+        :supplemental-data="[{ url: urlList[4] }]"
+        :selectorUi="true"
+        :plotLayout="plotLayout"
+      />
     </div>
   </Vue3DraggableResizable>
 </template>
 
 <script>
-import PlotVuer from '@/components/PlotVuer.vue'
-import Vue3DraggableResizable from 'vue3-draggable-resizable'
+import PlotVuer from '@/components/PlotVuer.vue';
+import Vue3DraggableResizable from 'vue3-draggable-resizable';
 //default styles
-import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-
+import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
 export default {
   name: 'Timeseries',
   components: {
     Vue3DraggableResizable,
-    PlotVuer
+    PlotVuer,
   },
   data: function () {
     return {
@@ -32,23 +32,25 @@ export default {
         'https://mapcore-bucket1.s3-us-west-2.amazonaws.com/ISAN/csv-data/use-case-2/Sample_1_18907001_channel_1.csv',
         'https://api.sparc.science/s3-resource/141/2/files/derivative/sub-1/sam-1/subject1_header.txt',
       ],
-      directDataInput: {'data': [
-        {
-          x: [0, 1, 2, 3, 4, 5],
-          y: [100, 10, 130, 70, 80, 90],
-          type: 'scatter'
-        }
-      ]},
+      directDataInput: {
+        data: [
+          {
+            x: [0, 1, 2, 3, 4, 5],
+            y: [100, 10, 130, 70, 80, 90],
+            type: 'scatter',
+          },
+        ],
+      },
       plotLayout: {
         margin: {
           t: 80,
           l: 80,
           r: 80,
           b: 80,
-          pad: 4
-        }
-      }
-    }
+          pad: 4,
+        },
+      },
+    };
   },
   computed: {
     metadata() {
@@ -66,14 +68,14 @@ export default {
               l: 85,
               r: 55,
               b: 190,
-              pad: 4
-            }
-          }
-        }
-      }
-    }
-  }
-}
+              pad: 4,
+            },
+          },
+        },
+      };
+    },
+  },
+};
 </script>
 
 <style>

@@ -1,7 +1,7 @@
 <template>
   <div ref="plotContainer" class="container">
     <div ref="plotlyplot" class="vue-plotly" />
-    <div v-if="selectorUi" class="chooser-container" :class="{inactive: loading}">
+    <div v-if="selectorUi" class="chooser-container" :class="{ inactive: loading }">
       <span>
         <el-select
           ref="selectBox"
@@ -12,7 +12,7 @@
           filterable
           collapse-tags
           default-first-option
-          :teleported=false
+          :teleported="false"
           placeholder="select"
         >
           <el-option v-for="item in traceNames" :key="item" :label="item" :value="item"></el-option>
@@ -26,16 +26,13 @@
 </template>
 
 <script>
-import { markRaw, toRaw } from 'vue'
-import Plotly from '@/js/custom_plotly'
-import DataManager from '@/js/data_manager'
-import PlotCommon from '@/mixins/plot_common'
-import { ElSelect, ElButton, ElOption } from 'element-plus';
-
+import { markRaw, toRaw } from 'vue';
+import Plotly from '@/js/custom_plotly';
+import DataManager from '@/js/data_manager';
+import PlotCommon from '@/mixins/plot_common';
 
 export default {
   name: 'TimeseriesPlot',
-  components: { ElSelect, ElButton, ElOption},
   mixins: [PlotCommon],
   data: function () {
     return {
@@ -47,175 +44,176 @@ export default {
       traceNames: [],
       xAxisLabel: 'time',
       resizeObserver: null,
-    }
+    };
   },
   computed: {
     fullMetadata() {
-      let metadata = JSON.parse(JSON.stringify(this.metadata))
+      let metadata = JSON.parse(JSON.stringify(this.metadata));
       if (!metadata['y-axes-columns']) {
-        metadata['y-axes-columns'] = []
+        metadata['y-axes-columns'] = [];
       }
       if (!metadata['x-axis-column']) {
-        metadata['x-axis-column'] = 0
+        metadata['x-axis-column'] = 0;
       }
       if (!metadata['no-header']) {
-        metadata['no-header'] = false
+        metadata['no-header'] = false;
       }
       if (!metadata['row-major']) {
-        metadata['row-major'] = false
+        metadata['row-major'] = false;
       }
-      return metadata
-    }
+      return metadata;
+    },
   },
   watch: {
     sourceData: function () {
-      this.loadData(this.sourceData)
-    }
+      this.loadData(this.sourceData);
+    },
   },
   mounted: function () {
-    this.loadData(this.sourceData)
+    this.loadData(this.sourceData);
     this.resizeObserver = new ResizeObserver(() => {
       if (this.$refs.plotlyplot) {
-        Plotly.Plots.resize(this.$refs.plotlyplot)
+        Plotly.Plots.resize(this.$refs.plotlyplot);
       }
-    })
-    this.resizeObserver.observe(this.$refs.plotContainer)
+    });
+    this.resizeObserver.observe(this.$refs.plotContainer);
   },
   beforeUnmount: function () {
     if (this.resizeObserver) {
-      this.resizeObserver.disconnect()
+      this.resizeObserver.disconnect();
     }
   },
   methods: {
     loadData(sourceData) {
       if (sourceData.url) {
-        this.loading = true
-        DataManager.loadFile(sourceData.url, this.dataReady) // Use url
+        this.loading = true;
+        DataManager.loadFile(sourceData.url, this.dataReady); // Use url
       } else {
-        const layout = this.plotLayout ? this.plotLayout : this.layout
-        Plotly.react(this.$refs.plotlyplot, this.sourceData.data, layout, this.options) // Use plolty input
+        const layout = this.plotLayout ? this.plotLayout : this.layout;
+        Plotly.react(this.$refs.plotlyplot, this.sourceData.data, layout, this.options); // Use plolty input
       }
     },
     dataReady(data) {
       const start = Date.now();
       if (this.fullMetadata['no-header']) {
-        DataManager.loadFile(this.supplementalData[0].url, this.headerDataReady)
+        DataManager.loadFile(this.supplementalData[0].url, this.headerDataReady);
       }
-      this.loading = false
+      this.loading = false;
       // this.handleResize()
-      this.parsedData = markRaw(data)
-      this.findYaxesCols()
-      this.populateTime()
-      this.populateDataValues()
+      this.parsedData = markRaw(data);
+      this.findYaxesCols();
+      this.populateTime();
+      this.populateDataValues();
       if (!this.fullMetadata['no-header']) {
-        this.populateXaxisLabel()
-        this.populateTraceNames()
+        this.populateXaxisLabel();
+        this.populateTraceNames();
       }
-      this.createPlot(this.time, this.xAxisLabel, this.dataValues, this.traceNames)
-      console.log(Date.now() - start)
+      this.createPlot(this.time, this.xAxisLabel, this.dataValues, this.traceNames);
+      console.log(Date.now() - start);
     },
     headerDataReady(data) {
-      this.traceData = markRaw(data)
-      this.populateXaxisLabel()
-      this.populateTraceNames()
+      this.traceData = markRaw(data);
+      this.populateXaxisLabel();
+      this.populateTraceNames();
       if (!this.loading) {
-        this.createPlot(this.time, this.xAxisLabel, this.dataValues, this.traceNames)
+        this.createPlot(this.time, this.xAxisLabel, this.dataValues, this.traceNames);
       }
     },
     filterPlot() {
-      let xTraceNames = this.filterX
+      let xTraceNames = this.filterX;
       if (xTraceNames.length === 0) {
-        this.createPlot(this.time, this.xAxisLabel, this.dataValues, this.traceNames)
-        return
+        this.createPlot(this.time, this.xAxisLabel, this.dataValues, this.traceNames);
+        return;
       }
-      let colIndeces = []
+      let colIndeces = [];
       for (let i of xTraceNames) {
-        colIndeces.push(this.fullMetadata['y-axes-columns'][this.traceNames.indexOf(i)])
+        colIndeces.push(this.fullMetadata['y-axes-columns'][this.traceNames.indexOf(i)]);
       }
-      let all_data = this.parsedData.data
+      let all_data = this.parsedData.data;
       if (!this.fullMetadata['no-header']) {
-        all_data = all_data.slice(1)
+        all_data = all_data.slice(1);
       }
-      let datat = []
+      let datat = [];
       for (let col of colIndeces) {
-        const filteredCol = all_data.map(row => {
-          return row[col]
-        })
-        datat.push(filteredCol)
+        const filteredCol = all_data.map((row) => {
+          return row[col];
+        });
+        datat.push(filteredCol);
       }
-      this.createPlot(this.time, this.xAxisLabel, datat, xTraceNames)
+      this.createPlot(this.time, this.xAxisLabel, datat, xTraceNames);
     },
     createPlot(xValues, xValuesLabel, yValues, traceNames) {
-      let tdata = []
+      let tdata = [];
       for (let i = 0; i < yValues.length; i++) {
         tdata.push({
           type: 'scatter',
           mode: 'lines',
           name: traceNames[i],
           x: xValues,
-          y: yValues[i]
-        })
+          y: yValues[i],
+        });
       }
-      let currentLayout = this.plotLayout ? this.plotLayout : this.layout
-      let newContent = {title: {text: this.title}, xaxis: {title: {text: xValuesLabel}}}
-      let tlayout = {...toRaw(currentLayout), ...newContent}
-      Plotly.react(this.$refs.plotlyplot, tdata, tlayout, this.options) //this.getOptions())
+      let currentLayout = this.plotLayout ? this.plotLayout : this.layout;
+      let newContent = { title: { text: this.title }, xaxis: { title: { text: xValuesLabel } } };
+      let tlayout = { ...toRaw(currentLayout), ...newContent };
+      Plotly.react(this.$refs.plotlyplot, tdata, tlayout, this.options); //this.getOptions())
     },
     findYaxesCols() {
       if (this.fullMetadata['y-axes-columns'].length === 0) {
-        let yCols = Array(this.parsedData.data[0].length).keys() // count up to number of coloumns
-        yCols.shift()
-        yCols.shift() // remove first two values
-        this.fullMetadata['y-axes-columns'] = yCols
+        let yCols = Array(this.parsedData.data[0].length).keys(); // count up to number of coloumns
+        yCols.shift();
+        yCols.shift(); // remove first two values
+        this.fullMetadata['y-axes-columns'] = yCols;
       }
     },
     populateXaxisLabel() {
       if (this.fullMetadata['no-header']) {
-        this.xAxisLabel = this.traceData.data[0][this.fullMetadata['x-axis-column']]
+        this.xAxisLabel = this.traceData.data[0][this.fullMetadata['x-axis-column']];
       } else {
-        this.xAxisLabel = this.parsedData.data[0][this.fullMetadata['x-axis-column']]
+        this.xAxisLabel = this.parsedData.data[0][this.fullMetadata['x-axis-column']];
       }
     },
     populateTraceNames() {
       if (this.fullMetadata['no-header']) {
-        this.traceNames.splice(0, this.traceNames.length)
+        this.traceNames.splice(0, this.traceNames.length);
         for (let col of this.fullMetadata['y-axes-columns']) {
-          this.traceNames.push(this.traceData.data[0][col])
+          this.traceNames.push(this.traceData.data[0][col]);
         }
-        this.$set(this.traceNames, 0, this.traceNames[0])
       } else {
-        this.traceNames = []
+        this.traceNames = [];
         for (let col of this.fullMetadata['y-axes-columns']) {
-          this.traceNames.push(this.parsedData.data[0][col])
+          this.traceNames.push(this.parsedData.data[0][col]);
         }
       }
     },
     populateTime() {
-      const this_ = this
-      let all_data = this.parsedData.data
+      const this_ = this;
+      let all_data = this.parsedData.data;
       if (!this.fullMetadata['no-header']) {
-        all_data = all_data.slice(1)
+        all_data = all_data.slice(1);
       }
-      this.time = markRaw(all_data.map(function (row) {
-        return row[this_.fullMetadata['x-axis-column']]
-      }))
+      this.time = markRaw(
+        all_data.map(function (row) {
+          return row[this_.fullMetadata['x-axis-column']];
+        }),
+      );
     },
     populateDataValues() {
-      let all_data = this.parsedData.data
+      let all_data = this.parsedData.data;
       if (!this.fullMetadata['no-header']) {
-        all_data = all_data.slice(1)
+        all_data = all_data.slice(1);
       }
-      let datat = []
+      let datat = [];
       for (let col of this.fullMetadata['y-axes-columns']) {
-        const filteredRow = all_data.map(row => {
-          return row[col]
-        })
-        datat.push(filteredRow)
+        const filteredRow = all_data.map((row) => {
+          return row[col];
+        });
+        datat.push(filteredRow);
       }
-      this.dataValues = markRaw(datat)
-    }
-  }
-}
+      this.dataValues = markRaw(datat);
+    },
+  },
+};
 </script>
 
 <style scoped>

@@ -1,32 +1,32 @@
-import PlotControls from '@/components/PlotControls.vue'
+import PlotControls from '@/components/PlotControls.vue';
 
 export default {
-  components: {PlotControls},
+  components: { PlotControls },
   props: {
     metadata: {
       type: Object,
-      required: true
+      required: true,
     },
     sourceData: {
       type: Object,
-      required: true
+      required: true,
     },
     plotLayout: {
       type: Object,
-      required: true
+      required: true,
     },
     supplementalData: {
       type: Array,
-      required: true
+      required: true,
     },
     version: {
       type: String,
-      required: true
+      required: true,
     },
     selectorUi: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data: function () {
     return {
@@ -39,20 +39,20 @@ export default {
           l: 55,
           r: 55,
           b: 90,
-          pad: 4
-        }
+          pad: 4,
+        },
       },
       loading: false,
       options: {
         responsive: true,
-        scrollZoom: true
-      }
-    }
+        scrollZoom: true,
+      },
+    };
   },
   computed: {
     title() {
-      const filename = this.sourceData.url.split('\\').pop().split('/').pop()
-      return filename.split('.')[0]
-    }
-  }
-}
+      const filename = this.sourceData.url.split('\\').pop().split('/').pop();
+      return filename.split('.')[0];
+    },
+  },
+};
