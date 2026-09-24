@@ -62,6 +62,10 @@ function generateMarkdown(file) {
 }
 
 function transformData(data) {
+  if (!data) {
+    return [];
+  }
+
   data.forEach((prop) => {
     if (prop.description) {
       prop.describe = [prop.description.replaceAll('\n', ' ')];
